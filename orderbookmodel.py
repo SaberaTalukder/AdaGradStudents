@@ -1,13 +1,13 @@
 class OrderbookModel():
-    def __init__():
+    def __init__(self):
         
         pass
     
-    def fit():
+    def fit(self):
         
         pass
     
-    def predict():
+    def predict(self):
         
         pass
     
