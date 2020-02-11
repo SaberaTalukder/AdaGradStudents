@@ -5,9 +5,13 @@ from sklearn import ensemble
 
 class RandomForsetOrder(OrderBookModel):
     
-    def __init__():
-        model = RandomForestClassifier()
+    def __init__(self):
+        model = ensemble.RandomForestClassifier()
         
         
-    def fit(X,y):
-        m
+    def fit(self, X,y):
+        self.model.fit(X,y)
+
+    def predict(self, X):
+        return self.model.predict(X)
+
