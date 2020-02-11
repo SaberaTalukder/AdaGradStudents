@@ -3,7 +3,7 @@ from sklearn import ensemble
 
 
 
-class RandomForsetOrder(OrderBookModel):
+class RandomForestOrder(OrderBookModel):
     
     def __init__(self):
         model = ensemble.RandomForestClassifier()
