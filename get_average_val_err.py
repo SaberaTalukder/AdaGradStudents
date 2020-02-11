@@ -1,14 +1,18 @@
+import numpy as np
+from orderbookmodel import OrderBookModel
+from sklearn.metrics import log_loss
 from sklearn.model_selection import KFold
-import orderbookmodel
 
-def get_avg_val_err(num_folds):
+"""
+This program performs calculations on the model.
+"""
+
+def get_val_err(num_folds, train, model):
     """Gets the average validation error of model across num_folds cross-validation folds."""
 
-    num_folds = 10
     kf = KFold(n_splits=num_folds)
 
-    train_sets = []
-    val_sets = []
+    err_list = []
 
     # Iterate through cross-validation folds:
     i = 1
@@ -19,9 +23,16 @@ def get_avg_val_err(num_folds):
         print('Fold ', i, ' of ', num_folds, ' test indices:', val_index_list)
         print(len(val_index_list))
         # Training and testing data points for this fold:
-        x_train, x_val = train.drop('y', axis=1).iloc[train_index_list], train.drop('y', axis=1).iloc[val_index_list]
+        x_train, x_val = train.drop(['id','y'], axis=1).iloc[train_index_list], train.drop('y', axis=1).iloc[val_index_list]
         y_train, y_val = train[['y']].iloc[train_index_list], train[['y']].iloc[val_index_list]
 
+        model.fit(x_train, y_train)
+        y_pred = model.predict(x_val)
+        val_err = log_loss(y_val, y_pred)
         
         i += 1
-    return avg_err
+        err_list.append(val_err)
+
+    avg_err = np.mean(err_list)
+    var_err = np.var(err_list)
+    return avg_err, var_err, err_list
