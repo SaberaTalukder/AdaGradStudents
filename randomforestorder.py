@@ -1,8 +1,6 @@
-
-
+from orderbookmodel import OrderBookModel
 from sklearn import ensemble
 
-from orderbookmodel import OrderBookModel
 
 
 class RandomForsetOrder(OrderBookModel):
