@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-# from orderbookmodel import OrderbookModel
+from orderbookmodel import OrderBookModel
 
-class first_neural_network():
+class first_neural_network(OrderBookModel):
 
     def __init__(self):
         # number of input parameters is 14
