@@ -18,9 +18,16 @@ class second_neural_network(OrderbookModel):
             nn.Dropout(0.5),
             nn.Linear(20, 1)
         )
+        self.loss_fn = nn.CrossEntropyLoss()
+        self.learning_rate = 1e-3
+        self.batch_s = 32
+        self.num_epochs = 10
 
-    def fit(self, X, y, learning_rate=1e-3, batch_size=60, num_epochs=10):
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=learning_rate)
+
+
+    def fit(self, X, y):
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+        loss_fn = self.loss_fn
 
         x_train_tensor = torch.tensor(X.values).type(torch.FloatTensor)
         y_train_tensor = torch.tensor(y.values).type(torch.FloatTensor)
@@ -29,9 +36,9 @@ class second_neural_network(OrderbookModel):
         for i in range(len(x_train_tensor)):
            train_dataset.append([x_train_tensor[i], y_train_tensor[i]])
 
-        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.batch_s, shuffle=True)
         self.model.train()
-        for epoch in range(num_epochs):
+        for epoch in range(self.num_epochs):
             for batch_idx, (data, target) in enumerate(train_loader):
                 # Erase accumulated gradients
                 optimizer.zero_grad()
@@ -40,7 +47,7 @@ class second_neural_network(OrderbookModel):
                 output = self.model(data)
 
                 # Calculate loss
-                loss = self.loss_fn(output, target)
+                loss = loss_fn(output, target)
 
                 # Backward pass
                 loss.backward()
@@ -52,5 +59,8 @@ class second_neural_network(OrderbookModel):
             print('Train Epoch: %d  Loss: %.4f' % (epoch + 1,  loss.item()))
 
 
-    def predict(self, X, y):
-        pass
+    def predict(self, X):
+        # put model in evaluation mode
+        self.model.eval()
+        return self.model(X)
+
