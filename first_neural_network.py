@@ -18,9 +18,10 @@ class first_neural_network(OrderBookModel):
             nn.ReLU(),
             nn.Dropout(0.1),
 
-            nn.Linear(10, 1)
+            nn.Linear(10, 1),
+            nn.Sigmoid()
         )
-        self.loss_fn = nn.CrossEntropyLoss()
+        self.loss_fn = nn.BCELoss()
         self.learning_rate = 1e-3
         self.batch_s = 32
         self.num_epochs = 10
@@ -51,6 +52,10 @@ class first_neural_network(OrderBookModel):
                 # Forward pass
                 output = self.model(data)
 
+                # print('target shape: ', target.shape)
+                # print('output shape: ', output.shape)
+                # print('target: ', target)
+                # print('output: ', output)
                 # Calculate loss
                 loss = loss_fn(output, target)
 
@@ -67,4 +72,5 @@ class first_neural_network(OrderBookModel):
     def predict(self, X):
         # put model in evaluation mode
         self.model.eval()
+        print('Sabera seeing what is printed: ', self.model(X))
         return self.model(X)
