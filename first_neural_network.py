@@ -8,23 +8,33 @@ from scipy import stats
 class first_neural_network(OrderBookModel):
 
     def __init__(self):
-        # number of input parameters is 14
-        self.model = nn.Sequential(
-            nn.Linear(39, 100),
-            nn.ReLU(),
-            nn.Dropout(0.1),
-
-            nn.Linear(100, 10),
-            nn.ReLU(),
-            nn.Dropout(0.1),
-
-            nn.Linear(10, 1),
-            nn.Sigmoid()
-        )
+        # number of input parameters is 39
         self.loss_fn = nn.BCELoss()
         self.learning_rate = 1e-3
         self.batch_s = 32
         self.num_epochs = 25
+        self.dropout = 0.1
+
+        self.model = nn.Sequential(
+            nn.Linear(39, 200),
+            nn.ReLU(),
+            nn.Dropout(self.dropout),
+
+            nn.Linear(200, 100),
+            nn.ReLU(),
+            nn.Dropout(self.dropout),
+
+            nn.Linear(100, 50),
+            nn.ReLU(),
+            nn.Dropout(self.dropout),
+
+            nn.Linear(50, 10),
+            nn.ReLU(),
+            nn.Dropout(self.dropout),
+
+            nn.Linear(10, 1),
+            nn.Sigmoid()
+        )
 
     def normalize_vals(self, X):
 
