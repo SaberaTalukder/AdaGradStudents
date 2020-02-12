@@ -10,7 +10,7 @@ class first_neural_network(OrderBookModel):
         self.model = nn.Sequential(
             nn.Flatten(),
 
-            nn.Linear(14, 100),
+            nn.Linear(39, 100),
             nn.ReLU(),
             nn.Dropout(0.1),
 
