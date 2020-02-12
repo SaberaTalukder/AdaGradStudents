@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd 
 
 import torch
 import torch.nn as nn
@@ -12,17 +13,16 @@ class second_neural_network(OrderBookModel):
     def __init__(self):
         # number of input parameters is 14
         self.model = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(39, 20),
+            nn.Linear(39, 80),
             nn.ReLU(),
-            nn.Dropout(0.2),
-            nn.Linear(20, 1),
+            nn.Dropout(0.1),
+            nn.Linear(80, 1),
             nn.Sigmoid()
         )
         self.loss_fn = nn.BCELoss()
         self.learning_rate = 1e-3
-        self.batch_s = 32
-        self.num_epochs = 10
+        self.batch_s =1 
+        self.num_epochs = 20
 
 
 
@@ -64,5 +64,19 @@ class second_neural_network(OrderBookModel):
         # put model in evaluation mode
         self.model.eval()
         x_val_tensor = torch.tensor(X.values).type(torch.FloatTensor)
-        return self.model(x_val_tensor)
+        print('type of x_val_tensor:')
+        print(type(x_val_tensor))
+        
+        y_pred = self.model(x_val_tensor)
+        print('type of y_pred:')
+        print(type(y_pred))
+        y_pred = y_pred.detach().numpy()
+        print('type of y_pred:')
+        print(type(y_pred))
+        
+        #y_pred = pd.DataFrame(data=y_pred.flatten())
+        print('type of y_pred:')
+        print(type(y_pred))
+        print(y_pred)
+        return y_pred
 
