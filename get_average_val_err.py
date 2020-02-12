@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.metrics import log_loss
+from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import KFold
 
 """
@@ -27,7 +28,9 @@ def get_val_err(num_folds, train, model):
         
         model.fit(x_train, y_train)
         y_pred = model.predict(x_val)
-        val_err = log_loss(y_val, y_pred)
+        #val_err = log_loss(y_val, y_pred)
+        val_err = roc_auc_score(y_val, y_pred)
+        print(val_err)
         
         i += 1
         err_list.append(val_err)
