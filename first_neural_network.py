@@ -30,8 +30,15 @@ class first_neural_network(OrderbookModel):
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
         loss_fn = self.loss_fn
 
+        # Sharon's code to make our data into the data loader setup
+        x_train_tensor = torch.tensor(X.values).type(torch.FloatTensor)
+        y_train_tensor = torch.tensor(y.values).type(torch.FloatTensor)
+
+        train_dataset = []
+        for i in range(len(x_train_tensor)):
+            train_dataset.append([x_train_tensor[i], y_train_tensor[i]])
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.batch_s, shuffle=True)
-        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=self.batch_s, shuffle=True)
+        # End Sharon's code
 
         self.model.train()
 
@@ -57,23 +64,7 @@ class first_neural_network(OrderbookModel):
             print('Train Epoch: %d  Loss: %.4f' % (epoch + 1, loss.item()))
 
 
-    def predict(self, X, y):
+    def predict(self, X):
+        # put model in evaluation mode
         self.model.eval()
-        loss_fn = self.loss_fn
-
-        test_loss = 0
-        correct = 0
-
-        # Turning off automatic differentiation
-        with torch.no_grad():
-            for data, target in test_loader:
-                output = self.model(data)
-                test_loss += loss_fn(output, target).item()  # Sum up batch loss
-                pred = output.argmax(dim=1, keepdim=True)  # Get the index of the max class score
-                correct += pred.eq(target.view_as(pred)).sum().item()  # calculates accuracy for classification
-
-        test_loss /= len(test_loader.dataset)
-
-        print('Test set: Average loss: %.4f, Accuracy: %d/%d (%.4f)' %
-              (test_loss, correct, len(test_loader.dataset),
-               100. * correct / len(test_loader.dataset)))
+        return self.model(X)
