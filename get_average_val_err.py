@@ -21,7 +21,7 @@ def get_val_err(num_folds, train, model):
 
         # Print out test indices:
         print('Fold ', i, ' of ', num_folds, ' test indices:', val_index_list)
-        print(len(val_index_list))
+        print('len(val_index_list): ', len(val_index_list))
         # Training and testing data points for this fold:
         x_train, x_val = train.drop(['id','date','y'], axis=1).iloc[train_index_list], train.drop(['id','y','date'], axis=1).iloc[val_index_list]
         y_train, y_val = train[['y']].iloc[train_index_list], train[['y']].iloc[val_index_list]
@@ -30,7 +30,7 @@ def get_val_err(num_folds, train, model):
         y_pred = model.predict(x_val)
         #val_err = log_loss(y_val, y_pred)
         val_err = roc_auc_score(y_val, y_pred)
-        print(val_err)
+        print('validation error: ', val_err)
         
         i += 1
         err_list.append(val_err)

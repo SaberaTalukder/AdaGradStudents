@@ -3,36 +3,66 @@ import torch
 import torch.nn as nn
 
 from orderbookmodel import OrderBookModel
+from scipy import stats
 
 class first_neural_network(OrderBookModel):
 
     def __init__(self):
-        # number of input parameters is 14
-        self.model = nn.Sequential(
-            nn.Linear(39, 100),
-            nn.ReLU(),
-            nn.Dropout(0.1),
+        # number of input parameters is 39
+        self.loss_fn = nn.BCELoss()
+        self.learning_rate = 1e-3
+        self.batch_s = 32
+        self.num_epochs = 25
+        self.dropout = 0.1
 
-            nn.Linear(100, 10),
+        self.model = nn.Sequential(
+            nn.Linear(39, 200),
             nn.ReLU(),
-            nn.Dropout(0.1),
+            nn.Dropout(self.dropout),
+
+            nn.Linear(200, 100),
+            nn.ReLU(),
+            nn.Dropout(self.dropout),
+
+            nn.Linear(100, 50),
+            nn.ReLU(),
+            nn.Dropout(self.dropout),
+
+            nn.Linear(50, 10),
+            nn.ReLU(),
+            nn.Dropout(self.dropout),
 
             nn.Linear(10, 1),
             nn.Sigmoid()
         )
-        self.loss_fn = nn.BCELoss()
-        self.learning_rate = 1e-3
-        self.batch_s = 32
-        self.num_epochs = 10
+
+    def normalize_vals(self, X):
+
+        X_temp = np.asarray(X)
+        std_dev = np.std(X_temp, axis=0)
+        mean_val = np.mean(X_temp, axis=0)
+        normalized_X = stats.zscore(X_temp, axis=0)
+
+        return normalized_X, mean_val, std_dev
 
 
     def fit(self, X, y):
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
         loss_fn = self.loss_fn
 
+        X, mean_val, std_dev = self.normalize_vals(X)
+
+        '''
+        Sharon's code is not going to work with the normalize values function because it changes the
+        X values in to a numpy array not into a pandas dataframe.
+        '''
         # Sharon's code to make our data into the data loader setup
-        x_train_tensor = torch.tensor(X.values).type(torch.FloatTensor)
+        # x_train_tensor = torch.tensor(X.values).type(torch.FloatTensor)
+        x_train_tensor = torch.tensor(X).type(torch.FloatTensor)
         y_train_tensor = torch.tensor(y.values).type(torch.FloatTensor)
+
+        print('x train tensor: ', x_train_tensor)
+        print('y train tensor: ', y_train_tensor)
 
         train_dataset = []
         for i in range(len(x_train_tensor)):
@@ -51,10 +81,6 @@ class first_neural_network(OrderBookModel):
                 # Forward pass
                 output = self.model(data)
 
-                # print('target shape: ', target.shape)
-                # print('output shape: ', output.shape)
-                # print('target: ', target)
-                # print('output: ', output)
                 # Calculate loss
                 loss = loss_fn(output, target)
 
@@ -71,6 +97,10 @@ class first_neural_network(OrderBookModel):
     def predict(self, X):
         # put model in evaluation mode
         self.model.eval()
-        x_val_tensor = torch.tensor(X.values).type(torch.FloatTensor)
+
+        X, mean_val, std_dev = self.normalize_vals(X)
+
+        # x_val_tensor = torch.tensor(X.values).type(torch.FloatTensor)
+        x_val_tensor = torch.tensor(X).type(torch.FloatTensor)
         y_pred = self.model(x_val_tensor)
         return np.asarray(y_pred.detach().numpy())
