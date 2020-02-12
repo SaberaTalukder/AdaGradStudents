@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import torch.nn as nn
 
@@ -8,8 +9,6 @@ class first_neural_network(OrderBookModel):
     def __init__(self):
         # number of input parameters is 14
         self.model = nn.Sequential(
-            nn.Flatten(),
-
             nn.Linear(39, 100),
             nn.ReLU(),
             nn.Dropout(0.1),
@@ -72,5 +71,6 @@ class first_neural_network(OrderBookModel):
     def predict(self, X):
         # put model in evaluation mode
         self.model.eval()
-        print('Sabera seeing what is printed: ', self.model(X))
-        return self.model(X)
+        x_val_tensor = torch.tensor(X.values).type(torch.FloatTensor)
+        y_pred = self.model(x_val_tensor)
+        return np.asarray(y_pred.detach().numpy())
