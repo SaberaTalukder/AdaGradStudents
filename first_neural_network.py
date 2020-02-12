@@ -12,7 +12,7 @@ class first_neural_network(OrderBookModel):
         self.loss_fn = nn.BCELoss()
         self.learning_rate = 1e-3
         self.batch_s = 32
-        self.num_epochs = 25
+        self.num_epochs = 10
         self.dropout = 0.1
 
         self.model = nn.Sequential(
