@@ -4,9 +4,9 @@ from sklearn import ensemble
 
 class RandomForestOrder():
     
-    def __init__(self):
+    def __init__(self,max_depth=None):
         
-        self.model = ensemble.RandomForestClassifier(n_estimators=100,max_depth=10)
+        self.model = ensemble.RandomForestClassifier(n_estimators=100,max_depth=max_depth)
         
         
     def fit(self, X,y):
