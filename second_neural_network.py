@@ -5,20 +5,21 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from orderbookmodel import OrderbookModel
+from orderbookmodel import OrderBookModel
 
-class second_neural_network(OrderbookModel):
+class second_neural_network(OrderBookModel):
 
     def __init__(self):
         # number of input parameters is 14
         self.model = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(14, 20),
+            nn.Linear(39, 20),
             nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(20, 1)
+            nn.Dropout(0.2),
+            nn.Linear(20, 1),
+            nn.Sigmoid()
         )
-        self.loss_fn = nn.CrossEntropyLoss()
+        self.loss_fn = nn.BCELoss()
         self.learning_rate = 1e-3
         self.batch_s = 32
         self.num_epochs = 10
@@ -62,5 +63,6 @@ class second_neural_network(OrderbookModel):
     def predict(self, X):
         # put model in evaluation mode
         self.model.eval()
-        return self.model(X)
+        x_val_tensor = torch.tensor(X.values).type(torch.FloatTensor)
+        return self.model(x_val_tensor)
 
