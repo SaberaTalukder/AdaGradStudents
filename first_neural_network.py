@@ -14,6 +14,8 @@ class first_neural_network(OrderBookModel):
         self.batch_s = 32
         self.num_epochs = 10
         self.dropout = 0.1
+        self.mean_val = 0
+        self.std_dev = 0
 
         self.model = nn.Sequential(
             nn.Linear(39, 200),
@@ -51,6 +53,8 @@ class first_neural_network(OrderBookModel):
         loss_fn = self.loss_fn
 
         X, mean_val, std_dev = self.normalize_vals(X)
+        self.mean_val = mean_val
+        self.std_dev = std_dev
 
         '''
         Sharon's code is not going to work with the normalize values function because it changes the
@@ -98,8 +102,7 @@ class first_neural_network(OrderBookModel):
         # put model in evaluation mode
         self.model.eval()
 
-        X, mean_val, std_dev = self.normalize_vals(X)
-
+        X = (X - self.mean_val) / self.std_dev
         # x_val_tensor = torch.tensor(X.values).type(torch.FloatTensor)
         x_val_tensor = torch.tensor(X).type(torch.FloatTensor)
         y_pred = self.model(x_val_tensor)
