@@ -28,6 +28,7 @@ def get_val_err(num_folds, train, model):
         
         model.fit(x_train, y_train)
         y_pred = model.predict(x_val)
+
         #val_err = log_loss(y_val, y_pred)
         val_err = roc_auc_score(y_val, y_pred)
         print('validation error: ', val_err)
