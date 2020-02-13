@@ -5,7 +5,7 @@ import torch.nn as nn
 from orderbookmodel import OrderBookModel
 from scipy import stats
 
-class first_neural_network(OrderBookModel):
+class third_neural_network(OrderBookModel):
 
     def __init__(self, model=None):
         # number of input parameters is 39

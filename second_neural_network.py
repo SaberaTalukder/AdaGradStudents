@@ -24,6 +24,8 @@ class second_neural_network(OrderBookModel):
         self.learning_rate = lr#1e-3
         self.batch_s = bs#20
         self.num_epochs = ne#10
+        self.mean_val = 0
+        self.std_dev = 0
 
 
     def normalize_vals(self, X):
@@ -41,6 +43,8 @@ class second_neural_network(OrderBookModel):
         loss_fn = self.loss_fn
 
         X, mean_val, std_dev = self.normalize_vals(X)
+        self.mean_val = mean_val
+        self.std_dev = std_dev
 
         x_train_tensor = torch.tensor(X).type(torch.FloatTensor)
         y_train_tensor = torch.tensor(y.values).type(torch.FloatTensor)
@@ -75,7 +79,9 @@ class second_neural_network(OrderBookModel):
     def predict(self, X):
         # put model in evaluation mode
         self.model.eval()
-        X, mean_val, std_dev = self.normalize_vals(X)
+        X = np.asarray(X)
+        X = (X - self.mean_val) / self.std_dev
+        # x_val_tensor = torch.tensor(X.values).type(torch.FloatTensor)
         x_val_tensor = torch.tensor(X).type(torch.FloatTensor)
         y_pred = self.model(x_val_tensor)
         return np.asarray(y_pred.detach().numpy())
