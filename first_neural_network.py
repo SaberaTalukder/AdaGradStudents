@@ -7,7 +7,7 @@ from scipy import stats
 
 class first_neural_network(OrderBookModel):
 
-    def __init__(self):
+    def __init__(self, model=None):
         # number of input parameters is 39
         self.loss_fn = nn.BCELoss()
         self.learning_rate = 1e-3
@@ -17,26 +17,29 @@ class first_neural_network(OrderBookModel):
         self.mean_val = 0
         self.std_dev = 0
 
-        self.model = nn.Sequential(
-            nn.Linear(39, 200),
-            nn.ReLU(),
-            nn.Dropout(self.dropout),
+        if model==None:
+            self.model = nn.Sequential(
+                nn.Linear(39, 200),
+                nn.ReLU(),
+                nn.Dropout(self.dropout),
 
-            nn.Linear(200, 100),
-            nn.ReLU(),
-            nn.Dropout(self.dropout),
+                nn.Linear(200, 100),
+                nn.ReLU(),
+                nn.Dropout(self.dropout),
 
-            nn.Linear(100, 50),
-            nn.ReLU(),
-            nn.Dropout(self.dropout),
+                nn.Linear(100, 50),
+                nn.ReLU(),
+                nn.Dropout(self.dropout),
 
-            nn.Linear(50, 10),
-            nn.ReLU(),
-            nn.Dropout(self.dropout),
+                nn.Linear(50, 10),
+                nn.ReLU(),
+                nn.Dropout(self.dropout),
 
-            nn.Linear(10, 1),
-            nn.Sigmoid()
-        )
+                nn.Linear(10, 1),
+                nn.Sigmoid()
+            )
+        else:
+            self.model = model
 
     def normalize_vals(self, X):
 
@@ -101,7 +104,7 @@ class first_neural_network(OrderBookModel):
     def predict(self, X):
         # put model in evaluation mode
         self.model.eval()
-
+        X = np.asarray(X)
         X = (X - self.mean_val) / self.std_dev
         # x_val_tensor = torch.tensor(X.values).type(torch.FloatTensor)
         x_val_tensor = torch.tensor(X).type(torch.FloatTensor)
