@@ -19,7 +19,7 @@ class first_neural_network(OrderBookModel):
 
         if model==None:
             self.model = nn.Sequential(
-                nn.Linear(39, 200),
+                nn.Linear(48, 200), # 48 for preprocessed data, 39 for non-preprocessed data
                 nn.ReLU(),
                 nn.Dropout(self.dropout),
 

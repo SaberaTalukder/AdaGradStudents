@@ -35,3 +35,4 @@ class RandomForestOrder():
         X = (X - self.mean_val) / self.std_dev
         return self.model.predict_proba(X)[:,1]
 
+
