@@ -11,19 +11,19 @@ from orderbookmodel import OrderBookModel
 
 class second_neural_network(OrderBookModel):
 
-    def __init__(self):
+    def __init__(self, lr=1e-3, bs=2, ne=2):
         # number of input parameters is 14
         self.model = nn.Sequential(
-            nn.Linear(39, 20),
+            nn.Linear(48, 20),
             nn.ReLU(),
             nn.Dropout(0.1),
             nn.Linear(20, 1),
             nn.Sigmoid()
         )
         self.loss_fn = nn.BCELoss()
-        self.learning_rate = 1e-3
-        self.batch_s = 20
-        self.num_epochs = 10
+        self.learning_rate = lr#1e-3
+        self.batch_s = bs#20
+        self.num_epochs = ne#10
 
 
     def normalize_vals(self, X):
@@ -79,3 +79,14 @@ class second_neural_network(OrderBookModel):
         x_val_tensor = torch.tensor(X).type(torch.FloatTensor)
         y_pred = self.model(x_val_tensor)
         return np.asarray(y_pred.detach().numpy())
+
+    def get_params(self, deep):
+        params_dict = dict(lr=self.learning_rate, bs=self.batch_s, ne=self.num_epochs)
+
+        return params_dict
+    
+    def set_params(self, params_dict):
+
+        self.learning_rate = params_dict['lr']
+        self.batch_s = params_dict['bs']
+        self.num_epochs = params_dict['ne']

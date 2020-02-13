@@ -27,5 +27,6 @@ class RandomForestOrder():
     def predict(self, X):
         #return self.model.predict(X)
         X, mean_val, std_dev = self.normalize_vals(X)
-        return self.model.predict_proba(X)[:,1]
+        y_pred = self.model.predict_proba(X)[:,1]
+        return y_pred
 
