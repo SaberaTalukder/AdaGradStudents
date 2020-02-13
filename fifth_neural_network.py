@@ -30,7 +30,7 @@ class first_neural_network(OrderBookModel):
             nn.Linear(100, 1),
             nn.Sigmoid()
         )
-            )
+
         else:
             self.model = model
 
